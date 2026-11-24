@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiCademy — AI-Powered Digital Institution</title>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            950: '#2E1065',
+                            900: '#4C1D95',
+                            800: '#5B21B6',
+                            700: '#6D28D9',
+                            600: '#7C3AED',
+                            500: '#8B5CF6',
+                            400: '#A78BFA',
+                            200: '#DDD6FE',
+                            100: '#EDE9FE',
+                            50: '#F5F3FF',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F3FF;
+            color: #1E1B4B;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #F5F3FF; }
+        ::-webkit-scrollbar-thumb { background: #C4B5FD; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #7C3AED; }
+
+        .view-section { animation: fadeIn 0.22s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Print styles for Stage 5 Verified Capability Passport */
+        @media print {
+            body { background: #FFFFFF !important; }
+            .no-print { display: none !important; }
+            #main-content { margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
+            #view-certification { display: block !important; }
+            #certificate-card {
+                box-shadow: none !important;
+                border: 2px solid #4C1D95 !important;
+                margin: 0 !important;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col lg:flex-row overflow-x-hidden antialiased selection:bg-brand-200 selection:text-brand-900">
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div id="mobile-backdrop" onclick="toggleMobileSidebar(false)" class="fixed inset-0 bg-brand-950/50 backdrop-blur-xs z-40 hidden lg:hidden no-print"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="fixed lg:sticky top-0 left-0 z-50 h-screen w-72 bg-brand-900 text-white flex flex-col justify-between transition-transform duration-300 -translate-x-full lg:translate-x-0 shadow-2xl shrink-0 no-print">
+        <div>
+            <!-- Brand Header -->
+            <div class="p-6 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center shadow-lg border border-white/20">
+                        <i data-lucide="graduation-cap" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-xl tracking-tight leading-none">AiCademy</h1>
+                        <p class="text-[11px] text-brand-200 font-medium tracking-wider uppercase mt-1">Digital Institution</p>
+                    </div>
+                </div>
+                <button onclick="toggleMobileSidebar(false)" class="lg:hidden p-1.5 rounded-lg hover:bg-white/10 text-brand-200" aria-label="Close menu">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="p-4 space-y-1.5 overflow-y-auto max-h-[calc(100vh-210px)]">
+                <p class="px-3 text-[11px] font-semibold text-brand-400 uppercase tracking-wider mb-2 mt-1">Command Center</p>
+                <button onclick="switchView('dashboard')" data-nav="dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all bg-white/15 text-white shadow-sm">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4 shrink-0"></i>
+                    <span>Dashboard &amp; Digital Twin</span>
+                </button>
+
+                <p class="px-3 text-[11px] font-semibold text-brand-400 uppercase tracking-wider mb-2 mt-5">5-Stage Lifecycle</p>
+                <button onclick="switchView('discovery')" data-nav="discovery" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-brand-100 hover:bg-white/10 hover:text-white">
+                    <span class="w-5 h-5 rounded-md bg-white/10 text-[11px] font-bold flex items-center justify-center shrink-0">1</span>
+                    <span class="truncate">Direction Discovery</span>
+                </button>
+                <button onclick="switchView('formation')" data-nav="formation" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-brand-100 hover:bg-white/10 hover:text-white">
+                    <span class="w-5 h-5 rounded-md bg-white/10 text-[11px] font-bold flex items-center justify-center shrink-0">2</span>
+                    <span class="truncate">Capability Formation</span>
+                </button>
+                <button onclick="switchView('mentoring')" data-nav="mentoring" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-brand-100 hover:bg-white/10 hover:text-white">
+                    <span class="w-5 h-5 rounded-md bg-white/10 text-[11px] font-bold flex items-center justify-center shrink-0">3</span>
+                    <span class="truncate">AI Mentoring Hub</span>
+                </button>
+                <button onclick="switchView('preparation')" data-nav="preparation" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-brand-100 hover:bg-white/10 hover:text-white">
+                    <span class="w-5 h-5 rounded-md bg-white/10 text-[11px] font-bold flex items-center justify-center shrink-0">4</span>
+                    <span class="truncate">Professional Prep</span>
+                </button>
+                <button onclick="switchView('certification')" data-nav="certification" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-brand-100 hover:bg-white/10 hover:text-white">
+                    <span class="w-5 h-5 rounded-md bg-white/10 text-[11px] font-bold flex items-center justify-center shrink-0">5</span>
+                    <span class="truncate">Readiness Passport</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Sidebar Footer: Student Capability Mini-Card -->
+        <div class="p-4 border-t border-white/10 bg-brand-950/40">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+                <span class="text-brand-200 font-medium">Digital Twin Score</span>
+                <span id="sidebar-score" class="font-bold text-white">0 / 100</span>
+            </div>
+            <div class="w-full h-2 bg-brand-950 rounded-full overflow-hidden">
+                <div id="sidebar-score-bar" class="h-full bg-gradient-to-r from-brand-400 to-emerald-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <p id="sidebar-role" class="text-[11px] text-brand-200 mt-2 truncate">Target: Not selected yet</p>
+        </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="flex-1 flex flex-col min-w-0">
+        <!-- Top Status Bar -->
+        <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-brand-100 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 no-print">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleMobileSidebar(true)" class="lg:hidden p-2 rounded-xl border border-brand-100 hover:bg-brand-50 text-brand-900" aria-label="Open menu">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+                <div>
+                    <h2 id="header-page-title" class="text-base sm:text-lg font-bold text-brand-950 leading-tight">Dashboard &amp; Digital Twin</h2>
+                    <p class="text-xs text-slate-500 hidden sm:block">From Learning &rarr; Measurable Capability &rarr; Job Readiness</p>
+                </div>
+            </div>
+
+            <!-- Right Status Pills & Actions -->
+            <div class="flex items-center flex-wrap gap-2 sm:gap-2.5">
+                <!-- Local Mode Status Badge -->
+                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>Local Mode &bull; Saved in Browser</span>
+                </div>
+
+                <!-- Load Demo Data Button -->
+                <button onclick="loadDemoData()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-brand-700 hover:bg-brand-800 text-white shadow-sm transition-all active:scale-95">
+                    <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                    <span>Load Demo Data</span>
+                </button>
+
+                <!-- Reset Button -->
+                <button onclick="openResetModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 transition-all active:scale-95">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                    <span>Reset</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Scrollable Content -->
+        <main id="main-content" class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+
+            <!-- ========================================================= -->
+            <!-- VIEW 1: DASHBOARD & DIGITAL TWIN                          -->
+            <!-- ========================================================= -->
+            <section id="view-dashboard" class="view-section space-y-6">
+                <!-- 4-Stage Institutional Journey Progress Bar -->
+                <div class="bg-white rounded-2xl p-5 sm:p-6 border border-brand-100 shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
+                        <div>
+                            <h3 class="text-sm font-bold text-brand-950 uppercase tracking-wider">AiCademy Capability Journey</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Dynamically calculated from your verified Digital Twin capability score</p>
+                        </div>
+                        <span id="journey-tier-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-brand-100 text-brand-800 w-fit">
+                            <i data-lucide="compass" class="w-3.5 h-3.5"></i> Stage: Beginner
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div id="step-beginner" class="p-3.5 rounded-xl border-2 border-brand-600 bg-brand-50/80 flex items-center gap-3 transition-all">
+                            <div class="w-9 h-9 rounded-lg bg-brand-700 text-white flex items-center justify-center shrink-0">
+                                <i data-lucide="search" class="w-4 h-4"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-xs font-bold text-brand-950">1. Beginner</p>
+                                <p class="text-[11px] text-slate-500 truncate">0–34 Score</p>
+                            </div>
+                        </div>
+                        <div id="step-learner" class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 flex items-center gap-3 transition-all">
+                            <div class="w-9 h-9 rounded-lg bg-slate-200 text-slate-600 flex items-center justify-center shrink-0">
+                                <i data-lucide="brain-circuit" class="w-4 h-4"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-xs font-bold text-slate-700">2. Learner</p>
+                                <p class="text-[11px] text-slate-500 truncate">35–59 Score</p>
+                            </div>
+                        </div>
+                        <div id="step-capable" class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 flex items-center gap-3 transition-all">
+                            <div class="w-9 h-9 rounded-lg bg-slate-200 text-slate-600 flex items-center justify-center shrink-0">
+                                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-xs font-bold text-slate-700">3. Capable</p>
+                                <p class="text-[11px] text-slate-500 truncate">60–79 Score</p>
+                            </div>
+                        </div>
+                        <div id="step-jobready" class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 flex items-center gap-3 transition-all">
+                            <div class="w-9 h-9 rounded-lg bg-slate-200 text-slate-600 flex items-center justify-center shrink-0">
+                                <i data-lucide="briefcase" class="w-4 h-4"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-xs font-bold text-slate-700">4. Job-Ready</p>
+                                <p class="text-[11px] text-slate-500 truncate">80–100 Score</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Digital Twin Grid: Score + Quick Stats & Radar Chart -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Left: Composite Score & Quick Stats -->
+                    <div class="lg:col-span-5 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700 text-white rounded-2xl p-6 shadow-lg flex flex-col justify-between relative overflow-hidden">
+                        <div class="absolute -right-10 -top-10 w-44 h-44 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold uppercase tracking-wider text-brand-200">Digital Twin Composite Score</span>
+                                <span id="dt-readiness-pill" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-white/15 text-white border border-white/20">Beginner</span>
+                            </div>
+                            <div class="mt-4 flex items-end gap-3">
+                                <span id="dt-overall-score" class="text-6xl font-extrabold tracking-tight leading-none">0</span>
+                                <span class="text-lg text-brand-200 font-medium mb-1">/ 100</span>
+                            </div>
+
+                            <!-- Quick Stats Row -->
+                            <div class="grid grid-cols-3 gap-2.5 mt-5">
+                                <div class="p-3 rounded-xl bg-white/10 border border-white/15 text-center">
+                                    <p id="stat-tasks" class="text-xl font-extrabold text-white">0</p>
+                                    <p class="text-[10px] text-brand-200 uppercase font-semibold mt-0.5">Tasks Done</p>
+                                </div>
+                                <div class="p-3 rounded-xl bg-white/10 border border-white/15 text-center">
+                                    <p id="stat-assessments" class="text-xl font-extrabold text-white">0</p>
+                                    <p class="text-[10px] text-brand-200 uppercase font-semibold mt-0.5">Quizzes Passed</p>
+                                </div>
+                                <div class="p-3 rounded-xl bg-white/10 border border-white/15 text-center">
+                                    <p id="stat-projects" class="text-xl font-extrabold text-white">0</p>
+                                    <p class="text-[10px] text-brand-200 uppercase font-semibold mt-0.5">Verified Projects</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-3.5 rounded-xl bg-white/10 border border-white/15">
+                                <p class="text-[11px] uppercase tracking-wider text-brand-200 font-semibold">Active Target Role</p>
+                                <p id="dt-target-role" class="text-sm font-bold text-white mt-0.5">Not Selected Yet</p>
+                                <p id="dt-student-greeting" class="text-xs text-brand-200 mt-0.5">Complete Stage 1 to lock your track.</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 grid grid-cols-2 gap-2.5">
+                            <button onclick="switchView('discovery')" class="px-3.5 py-2.5 rounded-xl bg-white text-brand-900 hover:bg-brand-50 text-xs font-bold flex items-center justify-center gap-1.5 transition-all">
+                                <i data-lucide="compass" class="w-4 h-4"></i> Discover Role
+                            </button>
+                            <button onclick="switchView('formation')" class="px-3.5 py-2.5 rounded-xl bg-brand-600/80 hover:bg-brand-600 text-white border border-white/20 text-xs font-bold flex items-center justify-center gap-1.5 transition-all">
+                                <i data-lucide="flame" class="w-4 h-4"></i> Take Quiz
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: 5-Dimension Capability Radar Chart -->
+                    <div class="lg:col-span-7 bg-white rounded-2xl p-6 border border-brand-100 shadow-sm flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div>
+                                <h3 class="text-base font-bold text-brand-950">5-Dimension Capability Radar</h3>
+                                <p class="text-xs text-slate-500">Direction Clarity &bull; Technical Depth &bull; Practical Execution &bull; Interview Readiness &bull; Consistency</p>
+                            </div>
+                            <span class="text-xs font-semibold text-brand-700 bg-brand-50 px-2.5 py-1 rounded-lg border border-brand-100 shrink-0">Live Twin</span>
+                        </div>
+                        <div class="relative flex-1 min-h-[270px] flex items-center justify-center">
+                            <canvas id="capabilityRadarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timestamped Proof Artifacts Execution Log -->
+                <div class="bg-white rounded-2xl p-6 border border-brand-100 shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                        <div>
+                            <h3 class="text-base font-bold text-brand-950 flex items-center gap-2">
+                                <i data-lucide="file-check-2" class="w-5 h-5 text-brand-600"></i>
+                                Proof Artifacts &amp; Execution Log
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Execution logs &gt; certificates. Every verified action is automatically timestamped and saved locally.</p>
+                        </div>
+                        <button onclick="switchView('certification')" class="text-xs font-semibold text-brand-700 hover:text-brand-900 bg-brand-50 hover:bg-brand-100 px-3.5 py-2 rounded-xl transition-all w-fit">
+                            Open Readiness Passport &rarr;
+                        </button>
+                    </div>
+                    <div id="dashboard-artifacts-list" class="space-y-2.5"></div>
+                </div>
+            </section>
+
+            <!-- ========================================================= -->
+            <!-- VIEW 2: STAGE 1 — DIRECTION DISCOVERY                     -->
+            <!-- ========================================================= -->
+            <section id="view-discovery" class="view-section hidden space-y-6">
+                <div class="bg-white rounded-2xl p-6 border border-brand-100 shadow-sm">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2">Stage 1 &bull; Smart Recommendation Engine</span>
+                    <h3 class="text-xl font-bold text-brand-950">Direction Discovery &amp; Adaptive Roadmap</h3>
+                    <p class="text-sm text-slate-500 mt-1 mb-5">Enter your name, select your technical interests, and list your current skills. Our built-in Career Engine analyzes your profile to recommend your Top 3 best-fit roles and a 4-week Adaptive Roadmap.</p>
+
+                    <form id="discovery-form" onsubmit="handleDirectionDiscovery(event)" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-brand-950 mb-1.5">Your Full Name</label>
+                                <input id="intake-name" type="text" required placeholder="e.g., Thasmiya Kulsum" class="w-full rounded-xl border border-brand-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-brand-50/20">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-brand-950 mb-1.5">Weekly Available Hours</label>
+                                <select id="intake-hours" class="w-full rounded-xl border border-brand-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-brand-50/20">
+                                    <option value="5-8 hours/week">5–8 hours / week (Light Pace)</option>
+                                    <option value="10-15 hours/week" selected>10–15 hours / week (Institutional Standard)</option>
+                                    <option value="20+ hours/week">20+ hours / week (Intensive Job-Ready Sprint)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-brand-950 mb-2">Select Your Technical Interests (Pick 1 or more)</label>
+                            <div class="flex flex-wrap gap-2.5" id="interest-tags-container">
+                                <label class="cursor-pointer">
+                                    <input type="checkbox" name="interest" value="Web Dev" class="peer hidden">
+                                    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border border-brand-200 bg-white text-brand-900 peer-checked:bg-brand-700 peer-checked:text-white peer-checked:border-brand-700 transition-all">
+                                        <i data-lucide="code-2" class="w-3.5 h-3.5"></i> Web Dev
+                                    </span>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="checkbox" name="interest" value="Data/AI" class="peer hidden">
+                                    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border border-brand-200 bg-white text-brand-900 peer-checked:bg-brand-700 peer-checked:text-white peer-checked:border-brand-700 transition-all">
+                                        <i data-lucide="cpu" class="w-3.5 h-3.5"></i> Data / AI
+                                    </span>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="checkbox" name="interest" value="Cloud/DevOps" class="peer hidden">
+                                    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border border-brand-200 bg-white text-brand-900 peer-checked:bg-brand-700 peer-checked:text-white peer-checked:border-brand-700 transition-all">
+                                        <i data-lucide="cloud" class="w-3.5 h-3.5"></i> Cloud / DevOps
+                                    </span>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="checkbox" name="interest" value="UI/UX" class="peer hidden">
+                                    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border border-brand-200 bg-white text-brand-900 peer-checked:bg-brand-700 peer-checked:text-white peer-checked:border-brand-700 transition-all">
+                                        <i data-lucide="palette" class="w-3.5 h-3.5"></i> UI / UX
+                                    </span>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="checkbox" name="interest" value="Cybersecurity" class="peer hidden">
+                                    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border border-brand-200 bg-white text-brand-900 peer-checked:bg-brand-700 peer-checked:text-white peer-checked:border-brand-700 transition-all">
+                                        <i data-lucide="shield" class="w-3.5 h-3.5"></i> Cybersecurity
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-brand-950 mb-1.5">Current Skills &amp; Tools (comma-separated)</label>
+                            <textarea id="intake-skills" rows="2" required placeholder="e.g., HTML, CSS, JavaScript, Python, SQL, Java, Git, Figma..." class="w-full rounded-xl border border-brand-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-brand-50/20"></textarea>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-6 py-3 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-semibold text-sm shadow-md flex items-center gap-2 transition-all active:scale-95">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                <span>Analyze Profile &amp; Generate Roles</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Discovery Results Container -->
+                <div id="discovery-results" class="hidden space-y-6">
+                    <div>
+                        <h4 class="text-base font-bold text-brand-950 mb-3 flex items-center gap-2">
+                            <i data-lucide="target" class="w-5 h-5 text-brand-600"></i>
+                            Top 3 Best-Fit Roles (Click to Lock Role &amp; Save Adaptive Roadmap)
+                        </h4>
+                        <div id="discovered-roles-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-4"></div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-brand-100 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                            <div>
+                                <h4 class="text-base font-bold text-brand-950 flex items-center gap-2">
+                                    <i data-lucide="map" class="w-5 h-5 text-brand-600"></i>
+                                    4-Week Adaptive Capability Roadmap
+                                </h4>
+                                <p id="roadmap-subtitle" class="text-xs text-slate-500 mt-0.5">Click any week to push its milestones into your Stage 2 Practice Checklist.</p>
+                            </div>
+                        </div>
+                        <div id="discovered-roadmap-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================================= -->
+            <!-- VIEW 3: STAGE 2 — CAPABILITY FORMATION                    -->
+            <!-- ========================================================= -->
+            <section id="view-formation" class="view-section hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Daily & Weekly Practice Checklist -->
+                    <div class="lg:col-span-6 bg-white rounded-2xl p-6 border border-brand-100 shadow-sm flex flex-col">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="text-[11px] font-bold text-brand-700 bg-brand-100 px-2.5 py-0.5 rounded-md uppercase">Daily &amp; Weekly Engine</span>
+                                <h3 class="text-lg font-bold text-brand-950 mt-1">Practice Checklist</h3>
+                            </div>
+                            <span id="checklist-progress-badge" class="text-xs font-bold text-brand-700 bg-brand-50 px-3 py-1 rounded-full border border-brand-200">0% Done</span>
+                        </div>
+
+                        <div id="practice-checklist" class="space-y-2.5 flex-1"></div>
+
+                        <form onsubmit="addChecklistTask(event)" class="mt-4 pt-4 border-t border-brand-100 flex gap-2">
+                            <input id="new-task-input" type="text" required placeholder="Add a custom daily practice task..." class="flex-1 rounded-xl border border-brand-200 px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <button type="submit" class="px-4 py-2 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-bold transition-all">Add</button>
+                        </form>
+                    </div>
+
+                    <!-- Built-in Surprise Assessment Generator -->
+                    <div class="lg:col-span-6 bg-white rounded-2xl p-6 border border-brand-100 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-md uppercase">Evaluation Engine</span>
+                                <span class="text-xs text-slate-500 font-medium">4 Technical &amp; Scenario MCQs</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-brand-950">Surprise Capability Assessment</h3>
+                            <p class="text-xs text-slate-500 mt-1">Instant role-tailored diagnostic quiz. Passing boosts your Technical Depth &amp; Consistency scores and logs a Proof Artifact.</p>
+
+                            <div id="quiz-container" class="mt-4">
+                                <div class="p-6 rounded-xl bg-brand-50/70 border border-dashed border-brand-200 text-center">
+                                    <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-700 flex items-center justify-center mx-auto mb-3">
+                                        <i data-lucide="brain" class="w-6 h-6"></i>
+                                    </div>
+                                    <p class="text-sm font-semibold text-brand-950">Ready for an adaptive diagnostic?</p>
+                                    <p class="text-xs text-slate-500 mt-1 mb-4">4 randomized technical &amp; real-world engineering scenario questions.</p>
+                                    <button onclick="launchSurpriseAssessment()" class="px-5 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-bold shadow-sm inline-flex items-center gap-2 transition-all active:scale-95">
+                                        <i data-lucide="zap" class="w-4 h-4"></i> Launch Surprise Assessment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Proof Tracker -->
+                <div class="bg-white rounded-2xl p-6 border border-brand-100 shadow-sm">
+                    <div class="mb-5">
+                        <span class="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-md uppercase">Proof-Based Readiness</span>
+                        <h3 class="text-lg font-bold text-brand-950 mt-1">Project Proof Tracker</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Submit mini or capstone projects with GitHub &amp; Live Demo URLs to build undeniable execution proof.</p>
+                    </div>
+
+                    <form onsubmit="submitProjectProof(event)" class="grid grid-cols-1 md:grid-cols-12 gap-3 mb-6 p-4 rounded-xl bg-brand-50/50 border border-brand-100">
+                        <div class="md:col-span-3">
+                            <label class="block text-[11px] font-semibold text-brand-900 mb-1">Project Title</label>
+                            <input id="proj-title" type="text" required placeholder="e.g., Smart Study Tracker" class="w-full rounded-xl border border-brand-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <div class="md:col-span-3">
+                            <label class="block text-[11px] font-semibold text-brand-900 mb-1">Tech Stack</label>
+                            <input id="proj-stack" type="text" required placeholder="e.g., React, Tailwind, Python" class="w-full rounded-xl border border-brand-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-[11px] font-semibold text-brand-900 mb-1">GitHub URL</label>
+                            <input id="proj-github" type="url" required placeholder="https://github.com/..." class="w-full rounded-xl border border-brand-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-[11px] font-semibold text-brand-900 mb-1">Live Demo URL</label>
+                            <input id="proj-demo" type="url" placeholder="https://demo.app/..." class="w-full rounded-xl border border-brand-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <div class="md:col-span-2 flex items-end">
+                            <button type="submit" class="w-full py-2 px-3 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-bold h-[38px] flex items-center justify-center gap-1.5 transition-all">
+                                <i data-lucide="plus-circle" class="w-4 h-4"></i> Log Proof
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="projects-proof-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+            </section>
+
+            <!-- ========================================================= -->
+            <!-- VIEW 4: STAGE 3 — MULTI-AGENT AI MENTORING HUB            -->
+            <!-- ========================================================= -->
+            <section id="view-mentoring" class="view-section hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Left Column: 4 Agents + Mood-Based Load Balancer -->
+                    <div class="lg:col-span-4 space-y-5">
+                        <div class="bg-white rounded-2xl p-5 border border-brand-100 shadow-sm">
+                            <h3 class="text-sm font-bold text-brand-950 uppercase tracking-wider mb-3">Coordinated AI Mentor Agents</h3>
+                            <div class="space-y-2">
+                                <button onclick="selectAgent('career')" data-agent="career" class="agent-card w-full text-left p-3 rounded-xl border-2 border-brand-600 bg-brand-50 transition-all flex items-start gap-3">
+                                    <div class="w-9 h-9 rounded-lg bg-brand-700 text-white flex items-center justify-center shrink-0"><i data-lucide="compass" class="w-4 h-4"></i></div>
+                                    <div>
+                                        <p class="text-xs font-bold text-brand-950">Career Agent</p>
+                                        <p class="text-[11px] text-slate-600">Domain clarity &amp; market reality</p>
+                                    </div>
+                                </button>
+                                <button onclick="selectAgent('planning')" data-agent="planning" class="agent-card w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-brand-50/50 transition-all flex items-start gap-3">
+                                    <div class="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0"><i data-lucide="calendar-clock" class="w-4 h-4"></i></div>
+                                    <div>
+                                        <p class="text-xs font-bold text-brand-950">Planning Agent</p>
+                                        <p class="text-[11px] text-slate-600">Adaptive schedules &amp; load balancing</p>
+                                    </div>
+                                </button>
+                                <button onclick="selectAgent('evaluation')" data-agent="evaluation" class="agent-card w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-brand-50/50 transition-all flex items-start gap-3">
+                                    <div class="w-9 h-9 rounded-lg bg-rose-600 text-white flex items-center justify-center shrink-0"><i data-lucide="microscope" class="w-4 h-4"></i></div>
+                                    <div>
+                                        <p class="text-xs font-bold text-brand-950">Evaluation Agent</p>
+                                        <p class="text-[11px] text-slate-600">Strict capability &amp; project audits</p>
+                                    </div>
+                                </button>
+                                <button onclick="selectAgent('recruiter')" data-agent="recruiter" class="agent-card w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-brand-50/50 transition-all flex items-start gap-3">
+                                    <div class="w-9 h-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0"><i data-lucide="briefcase" class="w-4 h-4"></i></div>
+                                    <div>
+                                        <p class="text-xs font-bold text-brand-950">Recruiter Agent</p>
+                                        <p class="text-[11px] text-slate-600">Hiring bar &amp; interview readiness</p>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Mood-Based Load Balancer -->
+                        <div class="bg-white rounded-2xl p-5 border border-brand-100 shadow-sm">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i data-lucide="heart-pulse" class="w-4 h-4 text-brand-600"></i>
+                                <h3 class="text-sm font-bold text-brand-950">Mood-Based Load Balancer</h3>
+                            </div>
+                            <p class="text-xs text-slate-500 mb-3">Select your current energy to get an instant, burnout-proof daily schedule adjustment.</p>
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <button onclick="applyMoodPlan('High Energy')" data-mood="High Energy" class="mood-btn px-3 py-2 rounded-xl border-2 border-brand-600 bg-brand-50 text-xs font-semibold text-brand-950">⚡ High Energy</button>
+                                <button onclick="applyMoodPlan('Steady Focus')" data-mood="Steady Focus" class="mood-btn px-3 py-2 rounded-xl border border-slate-200 hover:bg-brand-50/50 text-xs font-semibold text-slate-700">🎯 Steady Focus</button>
+                                <button onclick="applyMoodPlan('Low Energy')" data-mood="Low Energy" class="mood-btn px-3 py-2 rounded-xl border border-slate-200 hover:bg-brand-50/50 text-xs font-semibold text-slate-700">🔋 Low Energy</button>
+                                <button onclick="applyMoodPlan('Overwhelmed')" data-mood="Overwhelmed" class="mood-btn px-3 py-2 rounded-xl border border-slate-200 hover:bg-brand-50/50 text-xs font-semibold text-slate-700">😮‍💨 Overwhelmed</button>
+                            </div>
+                            <div id="mood-plan-output" class="p-3.5 rounded-xl bg-brand-50/80 border border-brand-200 text-xs text-slate-700 whitespace-pre-line leading-relaxed"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Context-Aware Chat Window -->
+                    <div class="lg:col-span-8 bg-white rounded-2xl border border-brand-100 shadow-sm flex flex-col h-[620px]">
+                        <div class="p-4 border-b border-brand-100 flex items-center justify-between bg-brand-50/40 rounded-t-2xl">
+                            <div class="flex items-center gap-3">
+                                <div id="active-agent-icon" class="w-10 h-10 rounded-xl bg-brand-700 text-white flex items-center justify-center shadow-xs">
+                                    <i data-lucide="compass" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h4 id="active-agent-name" class="text-sm font-bold text-brand-950">Career Agent</h4>
+                                    <p id="active-agent-desc" class="text-xs text-slate-500">Domain clarity, role roadmaps &amp; real-world market expectations</p>
+                                </div>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-brand-100 text-brand-800">Digital Twin Synced</span>
+                        </div>
+
+                        <div id="mentor-chat-messages" class="flex-1 p-5 overflow-y-auto space-y-4"></div>
+
+                        <div id="agent-quick-prompts" class="px-4 py-2 border-t border-brand-50 flex items-center gap-2 overflow-x-auto bg-slate-50/50"></div>
+
+                        <form onsubmit="sendMentorMessage(event)" class="p-4 border-t border-brand-100 flex gap-2.5">
+                            <input id="mentor-chat-input" type="text" required placeholder="Ask your AI mentor about your score, role, projects, or roadmap..." class="flex-1 rounded-xl border border-brand-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-sm font-bold flex items-center gap-1.5 transition-all active:scale-95">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                                <span class="hidden sm:inline">Send</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================================= -->
+            <!-- VIEW 5: STAGE 4 — PROFESSIONAL PREPARATION                -->
+            <!-- ========================================================= -->
+            <section id="view-preparation" class="view-section hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Interactive Mock Interview Simulator -->
+                    <div class="lg:col-span-7 bg-white rounded-2xl p-6 border border-brand-100 shadow-sm space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <span class="text-[11px] font-bold text-brand-700 bg-brand-100 px-2.5 py-0.5 rounded-md uppercase">Stage 4 &bull; Interview Engine</span>
+                                <h3 class="text-lg font-bold text-brand-950 mt-1">Mock Interview Simulator</h3>
+                            </div>
+                            <div class="flex items-center gap-1.5 bg-brand-50 p-1 rounded-xl border border-brand-100">
+                                <button onclick="setInterviewMode('Technical')" data-imode="Technical" class="imode-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-700 text-white">Technical</button>
+                                <button onclick="setInterviewMode('HR')" data-imode="HR" class="imode-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-brand-900 hover:bg-white">HR</button>
+                                <button onclick="setInterviewMode('Aptitude')" data-imode="Aptitude" class="imode-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-brand-900 hover:bg-white">Aptitude</button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between gap-3 p-4 rounded-xl bg-brand-50/70 border border-brand-200">
+                            <div>
+                                <p class="text-[11px] font-bold uppercase text-brand-700">Current Question (<span id="interview-mode-label">Technical</span>)</p>
+                                <p id="interview-question-text" class="text-sm font-semibold text-brand-950 mt-1"></p>
+                            </div>
+                            <button onclick="nextInterviewQuestion()" class="shrink-0 px-3.5 py-2 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-bold flex items-center gap-1.5 transition-all">
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Next
+                            </button>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-brand-950 mb-1.5">Your Answer</label>
+                            <textarea id="interview-answer-input" rows="5" placeholder="Write a structured response. Tip: Include concrete examples, metrics, trade-offs, or STAR format (Situation, Task, Action, Result)..." class="w-full rounded-xl border border-brand-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                            <div class="flex justify-end mt-3">
+                                <button onclick="evaluateInterviewAnswer()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-2 transition-all active:scale-95">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i> Submit &amp; Evaluate Answer
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="interview-feedback-box" class="hidden p-4 rounded-xl bg-slate-50 border border-brand-200 space-y-3"></div>
+                    </div>
+
+                    <!-- Resume & GitHub Proof Enhancer -->
+                    <div class="lg:col-span-5 bg-white rounded-2xl p-6 border border-brand-100 shadow-sm flex flex-col space-y-4">
+                        <div>
+                            <span class="text-[11px] font-bold text-indigo-700 bg-indigo-100 px-2.5 py-0.5 rounded-md uppercase">Proof Optimizer</span>
+                            <h3 class="text-lg font-bold text-brand-950 mt-1">Resume &amp; GitHub Proof Enhancer</h3>
+                            <p class="text-xs text-slate-500 mt-1">Select a saved project or paste a rough description to generate polished, action-verb resume bullets.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-semibold text-brand-900 mb-1">Load from Verified Projects (Optional)</label>
+                            <select id="resume-project-select" onchange="loadProjectIntoEnhancer()" class="w-full rounded-xl border border-brand-200 px-3 py-2 text-xs bg-brand-50/30 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <option value="">-- Or type a custom description below --</option>
+                            </select>
+                        </div>
+
+                        <textarea id="resume-raw-input" rows="4" placeholder="e.g., Built a student hackathon portal using HTML, Tailwind, and JavaScript to track projects." class="w-full rounded-xl border border-brand-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-brand-50/20"></textarea>
+
+                        <button onclick="enhanceResumeProof()" class="w-full py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all">
+                            <i data-lucide="wand-2" class="w-4 h-4"></i> Generate Action-Verb Bullets
+                        </button>
+
+                        <div id="resume-enhanced-output" class="hidden space-y-2.5 flex-1"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================================= -->
+            <!-- VIEW 6: STAGE 5 — READINESS CERTIFICATION PASSPORT        -->
+            <!-- ========================================================= -->
+            <section id="view-certification" class="view-section hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 no-print">
+                    <div>
+                        <span class="text-[11px] font-bold text-brand-700 bg-brand-100 px-2.5 py-0.5 rounded-md uppercase">Stage 5 &bull; Verified Credential</span>
+                        <h3 class="text-xl font-bold text-brand-950 mt-1">AiCademy Verified Capability Passport</h3>
+                        <p class="text-xs text-slate-500">Printable, execution-backed proof of employability generated from your Digital Twin.</p>
+                    </div>
+                    <button onclick="window.print()" class="px-5 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-bold shadow-md flex items-center gap-2 w-fit transition-all">
+                        <i data-lucide="printer" class="w-4 h-4"></i> Print / Save as PDF
+                    </button>
+                </div>
+
+                <!-- Printable Certificate Card -->
+                <div id="certificate-card" class="bg-white rounded-3xl border-2 border-brand-200 shadow-xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-brand-950 via-brand-900 to-brand-700 text-white p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-2xl bg-white/15 border border-white/25 flex items-center justify-center shrink-0">
+                                <i data-lucide="award" class="w-8 h-8 text-brand-200"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold uppercase tracking-widest text-brand-200">AiCademy Digital Institution</p>
+                                <h2 class="text-2xl font-extrabold tracking-tight">Verified Capability Passport</h2>
+                                <p class="text-xs text-brand-200 mt-0.5">Proof-Based Employability &amp; Digital Twin Credential</p>
+                            </div>
+                        </div>
+                        <div class="sm:text-right">
+                            <span id="cert-tier-badge" class="inline-block px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-emerald-400/20 text-emerald-200 border border-emerald-300/40">Beginner Tier</span>
+                            <p id="cert-id" class="text-[11px] text-brand-200 mt-1.5 font-mono">ID: AIC-LOCAL-2026</p>
+                        </div>
+                    </div>
+
+                    <div class="p-6 sm:p-8 space-y-7">
+                        <!-- Candidate & Composite Score -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center pb-6 border-b border-brand-100">
+                            <div>
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Candidate Name</p>
+                                <p id="cert-student-name" class="text-xl font-extrabold text-brand-950 mt-0.5">Student</p>
+                                <p id="cert-issued-date" class="text-xs text-slate-500 mt-0.5">Issued: Today</p>
+                            </div>
+                            <div>
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Validated Target Role</p>
+                                <p id="cert-target-role" class="text-lg font-bold text-brand-700 mt-0.5">Not Selected Yet</p>
+                                <p id="cert-hours" class="text-xs text-slate-500 mt-0.5">Pace: 10-15 hours/week</p>
+                            </div>
+                            <div class="md:text-right">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Composite Capability Score</p>
+                                <p class="text-4xl font-extrabold text-brand-900 mt-0.5"><span id="cert-overall-score">0</span><span class="text-lg text-slate-400 font-semibold">/100</span></p>
+                            </div>
+                        </div>
+
+                        <!-- 5-Dimension Breakdown -->
+                        <div>
+                            <h4 class="text-sm font-bold text-brand-950 uppercase tracking-wider mb-3.5">5-Dimension Capability Breakdown</h4>
+                            <div id="cert-dimensions-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5"></div>
+                        </div>
+
+                        <!-- Verified Project Links -->
+                        <div>
+                            <h4 class="text-sm font-bold text-brand-950 uppercase tracking-wider mb-3">Verified Project Proof Links</h4>
+                            <div id="cert-projects-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                        </div>
+
+                        <!-- Recent Execution Logs -->
+                        <div>
+                            <h4 class="text-sm font-bold text-brand-950 uppercase tracking-wider mb-3">Recent Execution Proof Logs</h4>
+                            <div id="cert-artifacts-list" class="space-y-2"></div>
+                        </div>
+
+                        <div class="pt-5 border-t border-brand-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+                                <span>Verified by AiCademy Capability Engineering Engine</span>
+                            </div>
+                            <span class="font-mono text-[11px] text-brand-700 font-semibold">AiCademy &bull; Proof Over Certificates</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Custom Reset Confirmation Modal (No browser confirm()) -->
+    <div id="reset-modal" class="fixed inset-0 z-50 bg-brand-950/60 backdrop-blur-xs hidden items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-brand-100">
+            <div class="w-11 h-11 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center mb-3">
+                <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-base font-bold text-brand-950">Reset All Local Data?</h3>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">This will clear your saved profile, Digital Twin scores, checklist, projects, and chat history from browser storage.</p>
+            <div class="flex justify-end gap-2 mt-5">
+                <button onclick="closeResetModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50">Cancel</button>
+                <button onclick="confirmResetData()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold">Yes, Reset Everything</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 max-w-sm w-full pointer-events-none no-print"></div>
+
+    <!-- ===================================================================== -->
+    <!-- 100% CLIENT-SIDE APPLICATION ENGINE (LOCALSTORAGE + SMART JS LOGIC)   -->
+    <!-- ===================================================================== -->
+    <script>
+        const STORAGE_KEY = 'aicademy_local_state_v1';
+        let radarChartInstance = null;
+
+        // ---------------------------------------------------------
+        // 1. DEFAULT STATE & LOCALSTORAGE PERSISTENCE
+        // ---------------------------------------------------------
+        function getDefaultState() {
+            return {
+                profile: {
+                    name: 'Student',
+                    interests: ['Web Dev'],
+                    skills: '',
+                    hours: '10-15 hours/week',
+                    targetRole: '',
+                    discoveredRoles: [],
+                    roadmap: []
+                },
+                scores: {
+                    direction: 10,
+                    technical: 10,
+                    practical: 5,
+                    interview: 5,
+                    consistency: 15
+                },
+                checklist: [
+                    { id: 'c1', text: 'Complete Stage 1 Direction Discovery & lock a target role', done: false },
+                    { id: 'c2', text: 'Pass your first Surprise Capability Assessment (75%+)', done: false },
+                    { id: 'c3', text: 'Submit 1 verified Project Proof with GitHub link', done: false },
+                    { id: 'c4', text: 'Complete 1 Mock Interview evaluation in Stage 4', done: false }
+                ],
+                projects: [],
+                artifacts: [],
+                assessmentsPassed: 0,
+                chats: {
+                    career: [],
+                    planning: [],
+                    evaluation: [],
+                    recruiter: []
+                },
+                activeAgent: 'career',
+                selectedMood: 'High Energy',
+                interviewMode: 'Technical',
+                interviewIndex: 0
+            };
+        }
+
+        let state = loadState();
+        let currentQuiz = null;
+
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return getDefaultState();
+                const parsed = JSON.parse(raw);
+                return { ...getDefaultState(), ...parsed };
+            } catch (e) {
+                return getDefaultState();
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (e) {
+                console.warn('localStorage save failed:', e);
+            }
+        }
+
+        // ---------------------------------------------------------
+        // 2. BUILT-IN KNOWLEDGE BASES (ROLES, QUIZZES, INTERVIEWS)
+        // ---------------------------------------------------------
+        const ROLE_CATALOG = [
+            {
+                title: 'Full-Stack Web Developer',
+                domain: 'Web Dev',
+                keywords: ['html', 'css', 'javascript', 'react', 'node', 'sql', 'tailwind', 'web', 'git'],
+                summary: 'Builds end-to-end interactive web applications, REST APIs, and responsive user interfaces.',
+                expectations: [
+                    'Ship responsive UIs with clean state management',
+                    'Design and integrate backend APIs & databases',
+                    'Debug production issues and maintain Git workflows'
+                ],
+                skillGaps: ['REST API Security', 'State Architecture', 'Automated Testing', 'CI/CD Deployment'],
+                roadmap: [
+                    { week: 'Week 1', focus: 'Modern Frontend Mastery', tasks: ['Build responsive layout with Tailwind CSS', 'Master async JS & DOM state patterns'] },
+                    { week: 'Week 2', focus: 'API & Data Persistence', tasks: ['Design CRUD data models & validation', 'Implement auth & error-handling flows'] },
+                    { week: 'Week 3', focus: 'Production Capstone', tasks: ['Deploy live web app to GitHub Pages/Vercel', 'Write technical README with screenshots'] },
+                    { week: 'Week 4', focus: 'Interview & Proof Sprint', tasks: ['Complete 2 Technical Mock Interviews', 'Polish GitHub & export Capability Passport'] }
+                ]
+            },
+            {
+                title: 'AI & Data Engineer',
+                domain: 'Data/AI',
+                keywords: ['python', 'sql', 'spark', 'pyspark', 'bigquery', 'data', 'ml', 'ai', 'pandas'],
+                summary: 'Transforms raw datasets into analytics pipelines, predictive models, and intelligent workflows.',
+                expectations: [
+                    'Clean, query, and aggregate large datasets with SQL/Python',
+                    'Build reproducible ETL pipelines & evaluation metrics',
+                    'Translate data insights into clear business decisions'
+                ],
+                skillGaps: ['Data Modeling', 'Pipeline Orchestration', 'Model Evaluation', 'Cloud Warehousing'],
+                roadmap: [
+                    { week: 'Week 1', focus: 'SQL & Python Analytics', tasks: ['Solve 10 intermediate SQL window-function queries', 'Build a data cleaning script in Python'] },
+                    { week: 'Week 2', focus: 'Data Pipelines & Modeling', tasks: ['Create an end-to-end ETL notebook', 'Visualize KPIs with interactive charts'] },
+                    { week: 'Week 3', focus: 'Applied AI Project Proof', tasks: ['Build & publish a data/AI dashboard on GitHub', 'Document dataset schema & accuracy metrics'] },
+                    { week: 'Week 4', focus: 'Case Study & Interviews', tasks: ['Practice 2 Data/SQL Mock Interviews', 'Export Verified Capability Passport'] }
+                ]
+            },
+            {
+                title: 'Cloud & DevOps Engineer',
+                domain: 'Cloud/DevOps',
+                keywords: ['cloud', 'aws', 'gcp', 'docker', 'linux', 'ci/cd', 'kubernetes', 'git', 'bash'],
+                summary: 'Automates infrastructure, deployments, monitoring, and scalable cloud architectures.',
+                expectations: [
+                    'Automate build, test, and deployment pipelines',
+                    'Configure cloud IAM, networking, and cost controls',
+                    'Monitor uptime, logs, and incident recovery'
+                ],
+                skillGaps: ['Docker Containers', 'GitHub Actions CI/CD', 'Infrastructure as Code', 'Observability'],
+                roadmap: [
+                    { week: 'Week 1', focus: 'Linux & Git Automation', tasks: ['Write shell scripts for automated backups', 'Set up a GitHub Actions lint/deploy workflow'] },
+                    { week: 'Week 2', focus: 'Containers & Cloud Basics', tasks: ['Containerize a web app with Docker', 'Configure cloud storage & access policies'] },
+                    { week: 'Week 3', focus: 'Live Cloud Deployment', tasks: ['Deploy a multi-tier app with live health checks', 'Document architecture diagram in GitHub'] },
+                    { week: 'Week 4', focus: 'Reliability & Interviews', tasks: ['Complete 2 DevOps scenario interviews', 'Export Verified Capability Passport'] }
+                ]
+            },
+            {
+                title: 'UI/UX Product Designer',
+                domain: 'UI/UX',
+                keywords: ['figma', 'design', 'css', 'ui', 'ux', 'wireframe', 'prototype', 'tailwind', 'html'],
+                summary: 'Crafts intuitive user journeys, accessible design systems, and high-converting interfaces.',
+                expectations: [
+                    'Conduct user research and map frictionless flows',
+                    'Build reusable component libraries and prototypes',
+                    'Collaborate with engineers on responsive handoff'
+                ],
+                skillGaps: ['Design Systems', 'WCAG Accessibility', 'Usability Testing', 'Micro-Interactions'],
+                roadmap: [
+                    { week: 'Week 1', focus: 'UX Research & Wireframing', tasks: ['Audit 2 real apps for usability friction', 'Create low-fidelity user flow wireframes'] },
+                    { week: 'Week 2', focus: 'Design Systems & Prototyping', tasks: ['Build a reusable color/typography token set', 'Design an interactive clickable prototype'] },
+                    { week: 'Week 3', focus: 'Case Study Proof', tasks: ['Publish a before/after UX case study', 'Code a responsive prototype in HTML/Tailwind'] },
+                    { week: 'Week 4', focus: 'Portfolio Walkthrough', tasks: ['Practice explaining design trade-offs in interviews', 'Export Verified Capability Passport'] }
+                ]
+            },
+            {
+                title: 'Cybersecurity Analyst',
+                domain: 'Cybersecurity',
+                keywords: ['security', 'network', 'linux', 'python', 'owasp', 'auth', 'cyber', 'sql'],
+                summary: 'Protects applications and cloud infrastructure by identifying vulnerabilities and hardening defenses.',
+                expectations: [
+                    'Audit web apps against OWASP Top 10 vulnerabilities',
+                    'Analyze security logs and triage suspicious events',
+                    'Enforce least-privilege authentication and encryption'
+                ],
+                skillGaps: ['OWASP Top 10 Audits', 'Network Packet Analysis', 'Threat Modeling', 'Incident Playbooks'],
+                roadmap: [
+                    { week: 'Week 1', focus: 'Web Security Fundamentals', tasks: ['Study XSS, CSRF, and SQL Injection defenses', 'Audit a sample login form for auth flaws'] },
+                    { week: 'Week 2', focus: 'Networking & Log Analysis', tasks: ['Analyze HTTP headers & TLS configurations', 'Write a Python script to parse access logs'] },
+                    { week: 'Week 3', focus: 'Security Audit Proof', tasks: ['Publish a vulnerability checklist & hardening report', 'Secure a demo app with CSP & input sanitization'] },
+                    { week: 'Week 4', focus: 'Scenario Interviews', tasks: ['Complete 2 incident-response mock interviews', 'Export Verified Capability Passport'] }
+                ]
+            }
+        ];
+
+        const QUIZ_BANK = [
+            {
+                domain: 'Web Dev',
+                question: 'Why should you avoid storing sensitive API keys directly in client-side JavaScript?',
+                options: ['It slows down CSS rendering', 'Anyone can inspect browser source/network tabs and steal them', 'localStorage cannot hold strings', 'Browsers block all fetch requests with keys'],
+                correctIndex: 1,
+                explanation: 'Client-side code is publicly visible in DevTools; secrets must stay on a server or be scoped with strict domain/security rules.'
+            },
+            {
+                domain: 'Web Dev',
+                question: 'What is the primary benefit of debouncing a search input event listener?',
+                options: ['It encrypts the user input', 'It reduces redundant function/API calls while the user is still typing', 'It forces synchronous execution', 'It clears localStorage automatically'],
+                correctIndex: 1,
+                explanation: 'Debouncing waits until the user pauses typing before triggering expensive work, improving responsiveness and cutting wasted calls.'
+            },
+            {
+                domain: 'Data/AI',
+                question: 'When evaluating a classification model on an imbalanced dataset (98% negative, 2% positive), which metric is most informative?',
+                options: ['Raw Accuracy alone', 'Precision, Recall, and F1-Score', 'Training loss only', 'Number of columns'],
+                correctIndex: 1,
+                explanation: 'A dummy model predicting all negatives gets 98% accuracy; Precision, Recall, and F1-Score reveal true performance on the minority class.'
+            },
+            {
+                domain: 'Cloud/DevOps',
+                question: 'What does the Principle of Least Privilege mean in cloud IAM configuration?',
+                options: ['Give all developers admin access for speed', 'Grant each user/service only the minimum permissions required for its task', 'Disable authentication in staging', 'Store passwords in Git repositories'],
+                correctIndex: 1,
+                explanation: 'Least privilege limits the blast radius if credentials are compromised by restricting access strictly to what is needed.'
+            },
+            {
+                domain: 'General',
+                question: 'Your team is 2 days from a hackathon deadline and a non-core feature is breaking the build. What is the best engineering decision?',
+                options: ['Rewrite the entire app from scratch', 'Revert/feature-flag the broken module and stabilize the core end-to-end demo', 'Ignore the crash and show static slides', 'Delete all Git commit history'],
+                correctIndex: 1,
+                explanation: 'Shipping a reliable, working core prototype always beats an unstable app with half-finished extras.'
+            },
+            {
+                domain: 'General',
+                question: 'Which Git workflow practice best prevents accidentally overwriting a teammate’s work?',
+                options: ['Force-pushing directly to main', 'Working on feature branches and opening Pull Requests for review', 'Zipping files and emailing them', 'Deleting the .git folder'],
+                correctIndex: 1,
+                explanation: 'Feature branches + Pull Requests isolate changes and let you resolve merge conflicts cleanly before merging into main.'
+            },
+            {
+                domain: 'UI/UX',
+                question: 'Why is a minimum 4.5:1 text-to-background contrast ratio recommended in UI design?',
+                options: ['It reduces image file sizes', 'It ensures readability for users with visual impairments and on bright screens', 'It is required for JavaScript to run', 'It makes animations faster'],
+                correctIndex: 1,
+                explanation: 'WCAG AA contrast standards ensure legibility across diverse vision abilities and lighting conditions.'
+            },
+            {
+                domain: 'Cybersecurity',
+                question: 'How do parameterized queries (prepared statements) prevent SQL Injection?',
+                options: ['They compress the database', 'They strictly separate SQL command structure from user-supplied data', 'They hide the database URL', 'They disable SELECT statements'],
+                correctIndex: 1,
+                explanation: 'Parameterized queries treat user input strictly as data values, never as executable SQL code.'
+            }
+        ];
+
+        const INTERVIEW_QUESTIONS = {
+            Technical: [
+                'Walk me through a technical project you built. What was the hardest bug or architectural trade-off you faced, and how did you solve it?',
+                'How would you design a web application so it stays fast and usable even when the user has a slow or intermittent internet connection?',
+                'Explain the difference between authentication and authorization, and describe how you would secure user data in a modern web app.'
+            ],
+            HR: [
+                'Tell me about a time you had to learn a new technology or tool under a tight deadline. How did you approach it?',
+                'Describe a situation where you disagreed with a teammate on how to build something. How did you resolve it?',
+                'Why are you targeting your chosen role, and what concrete proof shows you are ready to contribute from week one?'
+            ],
+            Aptitude: [
+                'A backend API currently handles 200 requests/second with an average latency of 150ms. If traffic triples to 600 req/s and database queries account for 80% of latency, what 2 optimizations would you prioritize first and why?',
+                'You have 12 hours left before a project launch and 3 remaining tasks: fixing a login crash (3h), adding dark mode (4h), and writing a clear README + live deploy (2h). How do you prioritize and communicate this to stakeholders?',
+                'If a feature reduces user onboarding time from 8 minutes to 2 minutes for 5,000 monthly users, how many total user-hours are saved per month? Explain your calculation.'
+            ]
+        };
+
+        const AGENTS = {
+            career: {
+                name: 'Career Agent',
+                desc: 'Domain clarity, role roadmaps & real-world market expectations',
+                icon: 'compass',
+                color: 'bg-brand-700',
+                prompts: ['Am I on track for my target role?', 'What skill should I focus on next?', 'How do I stand out as a fresher?']
+            },
+            planning: {
+                name: 'Planning Agent',
+                desc: 'Adaptive schedules, weekly sprints & burnout-proof load balancing',
+                icon: 'calendar-clock',
+                color: 'bg-indigo-600',
+                prompts: ['Give me a 3-day execution sprint', 'How do I stay consistent?', 'Break down my next milestone']
+            },
+            evaluation: {
+                name: 'Evaluation Agent',
+                desc: 'Strict capability audits, project critique & skill-gap diagnostics',
+                icon: 'microscope',
+                color: 'bg-rose-600',
+                prompts: ['Audit my current Digital Twin score', 'What is my weakest dimension?', 'How do I make my projects industry-grade?']
+            },
+            recruiter: {
+                name: 'Recruiter Agent',
+                desc: 'Hiring bar insights, resume proof & interview readiness',
+                icon: 'briefcase',
+                color: 'bg-emerald-600',
+                prompts: ['Am I ready to apply for jobs?', 'What do recruiters check on GitHub?', 'How should I pitch my projects?']
+            }
+        };
+
+        const MOOD_PLANS = {
+            'High Energy': '⚡ High Energy Sprint (3 hrs):\n• 75 min: Deep-work coding on your active capstone project\n• 15 min: Screen-free break & hydration\n• 45 min: Take a Surprise Capability Assessment & review explanations\n• 45 min: Complete 1 Technical Mock Interview & refine GitHub README',
+            'Steady Focus': '🎯 Steady Focus Plan (2 hrs):\n• 50 min: Check off 2 core tasks from your Practice Checklist\n• 10 min: Short stretch break\n• 40 min: Add a feature or bug fix to your Project Proof repo\n• 20 min: Generate polished resume bullets in Stage 4',
+            'Low Energy': '🔋 Low Energy Maintenance (45 mins):\n• 20 min: Review 1 roadmap concept or read clean open-source code\n• 15 min: Polish your project README or update your Capability Passport\n• 10 min: Check off 1 small habit to protect your consistency streak',
+            'Overwhelmed': '😮‍💨 Overwhelmed Reset (25 mins):\n• 5 min: Close extra tabs & pick ONLY ONE tiny task\n• 15 min: Complete 1 micro-step (e.g., 1 HR interview prompt or 1 checklist item)\n• 5 min: Log your win & step away guilt-free — consistency beats burnout'
+        };
+
+        // ---------------------------------------------------------
+        // 3. UTILITIES & TOASTS
+        // ---------------------------------------------------------
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const styles = {
+                success: 'bg-emerald-900 text-white border-emerald-700',
+                error: 'bg-rose-900 text-white border-rose-700',
+                info: 'bg-brand-900 text-white border-brand-700'
+            };
+            const icons = { success: 'check-circle', error: 'alert-circle', info: 'info' };
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-xl border shadow-lg text-xs font-medium transition-all duration-300 ${styles[type] || styles.info}`;
+            toast.innerHTML = `<i data-lucide="${icons[type] || 'info'}" class="w-4 h-4 shrink-0"></i><span>${escapeHtml(message)}</span>`;
+            container.appendChild(toast);
+            lucide.createIcons({ nodes: [toast] });
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(8px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        }
+
+        function getOverallScore() {
+            const s = state.scores;
+            return Math.min(100, Math.round((s.direction + s.technical + s.practical + s.interview + s.consistency) / 5));
+        }
+
+        function getReadinessTier(score) {
+            if (score >= 80) return { label: 'Job-Ready', step: 'jobready' };
+            if (score >= 60) return { label: 'Capable', step: 'capable' };
+            if (score >= 35) return { label: 'Learner', step: 'learner' };
+            return { label: 'Beginner', step: 'beginner' };
+        }
+
+        function bumpScore(dim, amount) {
+            state.scores[dim] = Math.min(100, Math.max(0, (state.scores[dim] || 0) + amount));
+            saveState();
+        }
+
+        function logArtifact(type, title, details, scoreImpact = '') {
+            state.artifacts.unshift({
+                id: 'art-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+                type,
+                title,
+                details,
+                scoreImpact,
+                timestamp: Date.now()
+            });
+            if (state.artifacts.length > 30) state.artifacts.pop();
+            saveState();
+        }
+
+        // ---------------------------------------------------------
+        // 4. MASTER RENDER PIPELINE
+        // ---------------------------------------------------------
+        function renderAll() {
+            renderDashboard();
+            renderDiscoveryFormAndResults();
+            renderChecklist();
+            renderProjects();
+            renderMentorChat();
+            renderInterviewSetup();
+            renderResumeProjectSelect();
+            renderCertification();
+            applyMoodPlan(state.selectedMood, false);
+            lucide.createIcons();
+        }
+
+        function renderDashboard() {
+            const score = getOverallScore();
+            const tier = getReadinessTier(score);
+
+            document.getElementById('dt-overall-score').textContent = score;
+            document.getElementById('sidebar-score').textContent = `${score} / 100`;
+            document.getElementById('sidebar-score-bar').style.width = `${score}%`;
+            document.getElementById('sidebar-role').textContent = state.profile.targetRole ? `Target: ${state.profile.targetRole}` : 'Target: Not selected yet';
+            document.getElementById('dt-readiness-pill').textContent = tier.label;
+            document.getElementById('journey-tier-badge').innerHTML = `<i data-lucide="award" class="w-3.5 h-3.5"></i> Stage: ${tier.label}`;
+
+            document.getElementById('dt-target-role').textContent = state.profile.targetRole || 'Not Selected Yet';
+            document.getElementById('dt-student-greeting').textContent = state.profile.targetRole
+                ? `Welcome, ${state.profile.name} • Active track synced across all 4 AI Agents.`
+                : `Welcome, ${state.profile.name} • Complete Stage 1 to lock your track.`;
+
+            // Quick Stats
+            const tasksDone = state.checklist.filter(c => c.done).length;
+            document.getElementById('stat-tasks').textContent = tasksDone;
+            document.getElementById('stat-assessments').textContent = state.assessmentsPassed || 0;
+            document.getElementById('stat-projects').textContent = state.projects.length;
+
+            // 4-Stage Journey Progress Bar
+            const steps = ['beginner', 'learner', 'capable', 'jobready'];
+            const activeIdx = steps.indexOf(tier.step);
+            steps.forEach((key, idx) => {
+                const el = document.getElementById(`step-${key}`);
+                const iconBox = el.querySelector('div');
+                const title = el.querySelector('p');
+                if (idx <= activeIdx) {
+                    el.className = 'p-3.5 rounded-xl border-2 border-brand-600 bg-brand-50/80 flex items-center gap-3 transition-all shadow-xs';
+                    iconBox.className = 'w-9 h-9 rounded-lg bg-brand-700 text-white flex items-center justify-center shrink-0';
+                    title.className = 'text-xs font-bold text-brand-950';
+                } else {
+                    el.className = 'p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 flex items-center gap-3 transition-all';
+                    iconBox.className = 'w-9 h-9 rounded-lg bg-slate-200 text-slate-500 flex items-center justify-center shrink-0';
+                    title.className = 'text-xs font-bold text-slate-600';
+                }
+            });
+
+            renderRadarChart();
+            renderArtifactsList();
+        }
+
+        function renderRadarChart() {
+            const ctx = document.getElementById('capabilityRadarChart');
+            if (!ctx) return;
+            const s = state.scores;
+            const values = [s.direction, s.technical, s.practical, s.interview, s.consistency];
+
+            if (radarChartInstance) {
+                radarChartInstance.data.datasets[0].data = values;
+                radarChartInstance.update();
+                return;
+            }
+
+            radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Direction Clarity', 'Technical Depth', 'Practical Execution', 'Interview Readiness', 'Consistency'],
+                    datasets: [{
+                        label: 'Capability Index',
+                        data: values,
+                        backgroundColor: 'rgba(109, 40, 217, 0.22)',
+                        borderColor: '#6D28D9',
+                        borderWidth: 2.5,
+                        pointBackgroundColor: '#4C1D95',
+                        pointBorderColor: '#FFFFFF',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 100,
+                            ticks: { stepSize: 20, backdropColor: 'transparent', color: '#64748B', font: { size: 10 } },
+                            grid: { color: '#EDE9FE' },
+                            angleLines: { color: '#DDD6FE' },
+                            pointLabels: { color: '#2E1065', font: { size: 11, weight: '600', family: 'Inter' } }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function renderArtifactsList() {
+            const box = document.getElementById('dashboard-artifacts-list');
+            if (state.artifacts.length === 0) {
+                box.innerHTML = `
+                    <div class="p-6 rounded-xl bg-brand-50/50 border border-dashed border-brand-200 text-center">
+                        <p class="text-sm font-semibold text-brand-950">No Proof Artifacts logged yet</p>
+                        <p class="text-xs text-slate-500 mt-1">Lock a target role, check off tasks, pass a Surprise Assessment, log a project, or finish a Mock Interview to build your execution ledger.</p>
+                    </div>`;
+                return;
+            }
+
+            const badgeStyles = {
+                Direction: 'bg-brand-100 text-brand-800',
+                Assessment: 'bg-amber-100 text-amber-800',
+                Project: 'bg-emerald-100 text-emerald-800',
+                Interview: 'bg-indigo-100 text-indigo-800',
+                Practice: 'bg-sky-100 text-sky-800'
+            };
+
+            box.innerHTML = state.artifacts.slice(0, 7).map(a => {
+                const timeStr = new Date(a.timestamp).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                return `
+                    <div class="p-3.5 rounded-xl border border-brand-100 bg-brand-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div class="flex items-start gap-3">
+                            <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 ${badgeStyles[a.type] || 'bg-brand-100 text-brand-800'}">${escapeHtml(a.type)}</span>
+                            <div>
+                                <p class="text-sm font-bold text-brand-950">${escapeHtml(a.title)}</p>
+                                <p class="text-xs text-slate-600 mt-0.5">${escapeHtml(a.details)}</p>
+                            </div>
+                        </div>
+                        <div class="sm:text-right shrink-0">
+                            ${a.scoreImpact ? `<span class="inline-block text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">${escapeHtml(a.scoreImpact)}</span>` : ''}
+                            <p class="text-[11px] text-slate-400 mt-1">${timeStr}</p>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        // ---------------------------------------------------------
+        // 5. STAGE 1: SMART DIRECTION DISCOVERY ENGINE
+        // ---------------------------------------------------------
+        function renderDiscoveryFormAndResults() {
+            document.getElementById('intake-name').value = state.profile.name === 'Student' ? '' : state.profile.name;
+            document.getElementById('intake-skills').value = state.profile.skills || '';
+            document.getElementById('intake-hours').value = state.profile.hours || '10-15 hours/week';
+
+            document.querySelectorAll('input[name="interest"]').forEach(cb => {
+                cb.checked = (state.profile.interests || []).includes(cb.value);
+            });
+
+            const resultsWrap = document.getElementById('discovery-results');
+            if (!state.profile.discoveredRoles || state.profile.discoveredRoles.length === 0) {
+                resultsWrap.classList.add('hidden');
+                return;
+            }
+            resultsWrap.classList.remove('hidden');
+
+            document.getElementById('discovered-roles-grid').innerHTML = state.profile.discoveredRoles.map(r => {
+                const isSelected = state.profile.targetRole === r.title;
+                return `
+                    <div class="bg-white rounded-2xl p-5 border-2 ${isSelected ? 'border-brand-600 ring-2 ring-brand-100' : 'border-brand-100'} shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-extrabold bg-brand-100 text-brand-800">${r.matchPercent}% Match</span>
+                                ${isSelected ? '<span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Active Track</span>' : ''}
+                            </div>
+                            <h5 class="text-base font-bold text-brand-950">${escapeHtml(r.title)}</h5>
+                            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">${escapeHtml(r.summary)}</p>
+
+                            <div class="mt-4">
+                                <p class="text-[11px] font-bold uppercase text-brand-800 mb-1">Day-to-Day Expectations</p>
+                                <ul class="text-xs text-slate-600 space-y-1 list-disc pl-4">
+                                    ${r.expectations.map(e => `<li>${escapeHtml(e)}</li>`).join('')}
+                                </ul>
+                            </div>
+
+                            <div class="mt-3">
+                                <p class="text-[11px] font-bold uppercase text-rose-700 mb-1">Key Skill Gaps</p>
+                                <div class="flex flex-wrap gap-1.5">
+                                    ${r.skillGaps.map(g => `<span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-rose-50 text-rose-800 border border-rose-100">${escapeHtml(g)}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="selectTargetRole('${escapeHtml(r.title).replace(/'/g, "\\'")}')" class="mt-5 w-full py-2.5 rounded-xl text-xs font-bold transition-all ${isSelected ? 'bg-emerald-600 text-white' : 'bg-brand-700 hover:bg-brand-800 text-white'}">
+                            ${isSelected ? '✓ Active Target Role' : 'Lock Role & Load Roadmap'}
+                        </button>
+                    </div>`;
+            }).join('');
+
+            const roadmap = state.profile.roadmap || [];
+            document.getElementById('discovered-roadmap-grid').innerHTML = roadmap.map((w, idx) => `
+                <div onclick="pushRoadmapWeekToChecklist(${idx})" class="p-4 rounded-xl bg-brand-50/60 hover:bg-brand-100/70 border border-brand-200 cursor-pointer transition-all group">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-extrabold uppercase text-brand-700">${escapeHtml(w.week)}</span>
+                        <span class="text-[10px] font-bold text-brand-600 opacity-75 group-hover:opacity-100">+ Add to Checklist</span>
+                    </div>
+                    <h5 class="text-sm font-bold text-brand-950 mt-0.5">${escapeHtml(w.focus)}</h5>
+                    <ul class="mt-2.5 space-y-1.5 text-xs text-slate-600">
+                        ${w.tasks.map(t => `<li class="flex items-start gap-1.5"><span class="text-brand-600 font-bold">&bull;</span><span>${escapeHtml(t)}</span></li>`).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        }
+
+        function handleDirectionDiscovery(e) {
+            e.preventDefault();
+            const name = document.getElementById('intake-name').value.trim() || 'Student';
+            const skills = document.getElementById('intake-skills').value.trim();
+            const hours = document.getElementById('intake-hours').value;
+            const interests = Array.from(document.querySelectorAll('input[name="interest"]:checked')).map(cb => cb.value);
+
+            if (interests.length === 0) {
+                showToast('Please select at least one technical interest.', 'error');
+                return;
+            }
+
+            const skillTokens = skills.toLowerCase().split(/[\s,]+/).filter(Boolean);
+
+            // Smart scoring engine across ROLE_CATALOG
+            const scored = ROLE_CATALOG.map(role => {
+                let score = 62;
+                if (interests.includes(role.domain)) score += 22;
+                const matchedKw = role.keywords.filter(kw => skillTokens.some(t => t.includes(kw) || kw.includes(t)));
+                score += Math.min(14, matchedKw.length * 4);
+                return { ...role, matchPercent: Math.min(98, score) };
+            }).sort((a, b) => b.matchPercent - a.matchPercent);
+
+            const top3 = scored.slice(0, 3);
+            state.profile.name = name;
+            state.profile.skills = skills;
+            state.profile.hours = hours;
+            state.profile.interests = interests;
+            state.profile.discoveredRoles = top3;
+            state.profile.roadmap = top3[0].roadmap;
+
+            bumpScore('direction', 20);
+            saveState();
+            renderAll();
+            showToast('Top 3 best-fit roles & 4-week roadmap generated!', 'success');
+        }
+
+        function selectTargetRole(roleTitle) {
+            const found = ROLE_CATALOG.find(r => r.title === roleTitle) || state.profile.discoveredRoles.find(r => r.title === roleTitle);
+            state.profile.targetRole = roleTitle;
+            if (found && found.roadmap) {
+                state.profile.roadmap = found.roadmap;
+            }
+            state.scores.direction = Math.max(state.scores.direction, 85);
+            logArtifact('Direction', `Locked Target Role: ${roleTitle}`, `Saved 4-week Adaptive Roadmap (${state.profile.hours}).`, '+Direction Clarity');
+            saveState();
+            renderAll();
+            showToast(`Target role locked: ${roleTitle}`, 'success');
+        }
+
+        function pushRoadmapWeekToChecklist(weekIdx) {
+            const week = state.profile.roadmap[weekIdx];
+            if (!week) return;
+            let added = 0;
+            week.tasks.forEach(t => {
+                const label = `[${week.week}] ${t}`;
+                if (!state.checklist.some(c => c.text === label)) {
+                    state.checklist.push({ id: 'rm-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6), text: label, done: false });
+                    added++;
+                }
+            });
+            saveState();
+            renderChecklist();
+            showToast(added > 0 ? `Added ${added} tasks from ${week.week} to Stage 2 Checklist!` : `${week.week} tasks are already in your checklist.`, 'success');
+        }
+
+        // ---------------------------------------------------------
+        // 6. STAGE 2: CHECKLIST, SURPRISE ASSESSMENT & PROJECTS
+        // ---------------------------------------------------------
+        function renderChecklist() {
+            const box = document.getElementById('practice-checklist');
+            const total = state.checklist.length;
+            const done = state.checklist.filter(c => c.done).length;
+            const pct = total ? Math.round((done / total) * 100) : 0;
+            document.getElementById('checklist-progress-badge').textContent = `${pct}% Done`;
+
+            if (total === 0) {
+                box.innerHTML = `<p class="text-xs text-slate-500">No tasks yet. Add one below or click a Roadmap week in Stage 1.</p>`;
+                return;
+            }
+
+            box.innerHTML = state.checklist.map((item, idx) => `
+                <label class="flex items-start gap-3 p-3 rounded-xl border ${item.done ? 'bg-emerald-50/50 border-emerald-200' : 'bg-brand-50/20 border-brand-100'} cursor-pointer hover:bg-brand-50/60 transition-all">
+                    <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklistTask(${idx})" class="mt-0.5 w-4 h-4 accent-brand-700 rounded cursor-pointer">
+                    <span class="text-xs font-medium flex-1 ${item.done ? 'line-through text-slate-400' : 'text-brand-950'}">${escapeHtml(item.text)}</span>
+                </label>
+            `).join('');
+        }
+
+        function toggleChecklistTask(idx) {
+            const item = state.checklist[idx];
+            if (!item) return;
+            item.done = !item.done;
+            if (item.done) {
+                bumpScore('consistency', 8);
+                bumpScore('technical', 4);
+                logArtifact('Practice', `Completed Task: ${item.text.slice(0, 60)}`, 'Checked off in Daily & Weekly Practice Engine.', '+Consistency');
+            }
+            saveState();
+            renderDashboard();
+            renderChecklist();
+            renderCertification();
+        }
+
+        function addChecklistTask(e) {
+            e.preventDefault();
+            const input = document.getElementById('new-task-input');
+            const text = input.value.trim();
+            if (!text) return;
+            state.checklist.push({ id: 'custom-' + Date.now(), text, done: false });
+            input.value = '';
+            saveState();
+            renderChecklist();
+            showToast('Practice task added!', 'info');
+        }
+
+        function launchSurpriseAssessment() {
+            const interests = state.profile.interests || [];
+            const prioritized = QUIZ_BANK.filter(q => interests.includes(q.domain) || q.domain === 'General');
+            const pool = prioritized.length >= 4 ? prioritized : QUIZ_BANK;
+            const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, 4);
+
+            currentQuiz = { questions: shuffled, answers: {} };
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = `
+                <div class="space-y-3.5 max-h-[380px] overflow-y-auto pr-1">
+                    ${shuffled.map((q, qi) => `
+                        <div class="p-4 rounded-xl bg-brand-50/40 border border-brand-100">
+                            <p class="text-xs font-bold text-brand-950 mb-2">Q${qi + 1}. ${escapeHtml(q.question)}</p>
+                            <div class="space-y-1.5">
+                                ${q.options.map((opt, oi) => `
+                                    <label class="flex items-center gap-2.5 p-2 rounded-lg bg-white border border-brand-100 hover:border-brand-400 cursor-pointer text-xs">
+                                        <input type="radio" name="quiz-q-${qi}" value="${oi}" onchange="recordQuizAnswer(${qi}, ${oi})" class="accent-brand-700">
+                                        <span>${escapeHtml(opt)}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <button onclick="gradeSurpriseAssessment()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm">Submit &amp; Grade Quiz</button>
+                </div>`;
+        }
+
+        function recordQuizAnswer(qi, oi) {
+            if (currentQuiz) currentQuiz.answers[qi] = oi;
+        }
+
+        function gradeSurpriseAssessment() {
+            if (!currentQuiz) return;
+            let correct = 0;
+            currentQuiz.questions.forEach((q, idx) => {
+                if (currentQuiz.answers[idx] === q.correctIndex) correct++;
+            });
+            const pct = Math.round((correct / currentQuiz.questions.length) * 100);
+            const passed = pct >= 50;
+            if (passed) state.assessmentsPassed = (state.assessmentsPassed || 0) + 1;
+
+            const boost = correct * 6 + 4;
+            bumpScore('technical', boost);
+            bumpScore('consistency', 6);
+            logArtifact('Assessment', `Surprise Assessment: ${correct}/4 (${pct}%)`, `Role diagnostic completed with ${pct}% accuracy.`, `+${boost} Tech Depth`);
+            saveState();
+
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = `
+                <div class="p-4 rounded-xl ${pct >= 75 ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'} border mb-3 flex items-center justify-between gap-2">
+                    <div>
+                        <p class="text-sm font-extrabold text-brand-950">Score: ${correct} / 4 (${pct}%)</p>
+                        <p class="text-xs text-slate-600">Digital Twin updated &amp; Proof Artifact logged!</p>
+                    </div>
+                    <button onclick="launchSurpriseAssessment()" class="px-3.5 py-2 rounded-xl bg-brand-700 text-white text-xs font-bold shrink-0">Retake New</button>
+                </div>
+                <div class="space-y-2 max-h-[260px] overflow-y-auto pr-1">
+                    ${currentQuiz.questions.map((q, idx) => {
+                        const isRight = currentQuiz.answers[idx] === q.correctIndex;
+                        return `
+                            <div class="p-3 rounded-xl border ${isRight ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'} text-xs">
+                                <p class="font-bold text-brand-950">${isRight ? '✓' : '✗'} Q${idx + 1}: ${escapeHtml(q.question)}</p>
+                                <p class="text-slate-700 mt-1"><strong>Correct:</strong> ${escapeHtml(q.options[q.correctIndex])}</p>
+                                <p class="text-slate-500 mt-0.5">${escapeHtml(q.explanation)}</p>
+                            </div>`;
+                    }).join('')}
+                </div>`;
+
+            renderDashboard();
+            renderCertification();
+            showToast(`Assessment graded: ${pct}%!`, 'success');
+        }
+
+        function submitProjectProof(e) {
+            e.preventDefault();
+            const title = document.getElementById('proj-title').value.trim();
+            const stack = document.getElementById('proj-stack').value.trim();
+            const github = document.getElementById('proj-github').value.trim();
+            const demo = document.getElementById('proj-demo').value.trim();
+
+            state.projects.unshift({
+                id: 'proj-' + Date.now(),
+                title,
+                stack,
+                github,
+                demo,
+                timestamp: Date.now()
+            });
+
+            bumpScore('practical', 25);
+            bumpScore('technical', 8);
+            logArtifact('Project', `Verified Project: ${title}`, `Stack: ${stack}`, '+25 Practical');
+            saveState();
+
+            document.getElementById('proj-title').value = '';
+            document.getElementById('proj-stack').value = '';
+            document.getElementById('proj-github').value = '';
+            document.getElementById('proj-demo').value = '';
+
+            renderAll();
+            showToast('Project Proof verified & saved!', 'success');
+        }
+
+        function renderProjects() {
+            const box = document.getElementById('projects-proof-list');
+            if (state.projects.length === 0) {
+                box.innerHTML = `<div class="md:col-span-3 p-5 rounded-xl bg-slate-50 border border-dashed border-slate-200 text-center text-xs text-slate-500">No projects logged yet. Submit your first project above to earn Practical Execution points!</div>`;
+                return;
+            }
+
+            box.innerHTML = state.projects.map(p => `
+                <div class="p-4 rounded-xl border border-brand-100 bg-white shadow-xs flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800">Verified Proof</span>
+                            <span class="text-[11px] text-slate-400">${new Date(p.timestamp).toLocaleDateString()}</span>
+                        </div>
+                        <h4 class="text-sm font-bold text-brand-950">${escapeHtml(p.title)}</h4>
+                        <p class="text-xs text-slate-600 mt-1"><strong>Stack:</strong> ${escapeHtml(p.stack)}</p>
+                    </div>
+                    <div class="mt-3 pt-2.5 border-t border-brand-50 flex items-center gap-3 text-xs font-bold">
+                        <a href="${escapeHtml(p.github)}" target="_blank" rel="noopener" class="text-brand-700 hover:text-brand-900">GitHub &nearr;</a>
+                        ${p.demo ? `<a href="${escapeHtml(p.demo)}" target="_blank" rel="noopener" class="text-emerald-700 hover:text-emerald-900">Live Demo &nearr;</a>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ---------------------------------------------------------
+        // 7. STAGE 3: MULTI-AGENT AI MENTORING HUB & MOOD BALANCER
+        // ---------------------------------------------------------
+        function selectAgent(agentId) {
+            state.activeAgent = agentId;
+            const agent = AGENTS[agentId];
+
+            document.querySelectorAll('.agent-card').forEach(card => {
+                const isThis = card.dataset.agent === agentId;
+                card.className = isThis
+                    ? 'agent-card w-full text-left p-3 rounded-xl border-2 border-brand-600 bg-brand-50 transition-all flex items-start gap-3'
+                    : 'agent-card w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-brand-50/50 transition-all flex items-start gap-3';
+            });
+
+            document.getElementById('active-agent-name').textContent = agent.name;
+            document.getElementById('active-agent-desc').textContent = agent.desc;
+            const iconWrap = document.getElementById('active-agent-icon');
+            iconWrap.className = `w-10 h-10 rounded-xl ${agent.color} text-white flex items-center justify-center shadow-xs`;
+            iconWrap.innerHTML = `<i data-lucide="${agent.icon}" class="w-5 h-5"></i>`;
+
+            saveState();
+            renderMentorChat();
+            lucide.createIcons();
+        }
+
+        function renderMentorChat() {
+            const agentId = state.activeAgent;
+            const agent = AGENTS[agentId];
+            const messages = state.chats[agentId] || [];
+            const box = document.getElementById('mentor-chat-messages');
+
+            if (messages.length === 0) {
+                box.innerHTML = `
+                    <div class="p-4 rounded-2xl bg-brand-50/70 border border-brand-100 max-w-lg">
+                        <p class="text-xs font-bold text-brand-800 mb-1">${agent.name}</p>
+                        <p class="text-sm text-slate-700">Hello ${escapeHtml(state.profile.name)}! I'm synced with your Digital Twin (Score: <strong>${getOverallScore()}/100</strong>${state.profile.targetRole ? `, Role: <strong>${escapeHtml(state.profile.targetRole)}</strong>` : ''}, Projects: <strong>${state.projects.length}</strong>). Ask me anything or tap a quick prompt below.</p>
+                    </div>`;
+            } else {
+                box.innerHTML = messages.map(m => {
+                    const isUser = m.role === 'user';
+                    return `
+                        <div class="flex ${isUser ? 'justify-end' : 'justify-start'}">
+                            <div class="max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-line ${isUser ? 'bg-brand-700 text-white rounded-br-sm' : 'bg-brand-50/80 border border-brand-100 text-slate-800 rounded-bl-sm'}">
+                                ${!isUser ? `<p class="text-[11px] font-bold text-brand-700 mb-1">${agent.name}</p>` : ''}
+                                ${escapeHtml(m.text)}
+                            </div>
+                        </div>`;
+                }).join('');
+                box.scrollTop = box.scrollHeight;
+            }
+
+            document.getElementById('agent-quick-prompts').innerHTML = agent.prompts.map(p => `
+                <button onclick="useQuickPrompt('${p.replace(/'/g, "\\'")}')" class="shrink-0 px-3 py-1.5 rounded-full bg-white border border-brand-200 hover:bg-brand-50 text-[11px] font-medium text-brand-800 transition-all">
+                    ${escapeHtml(p)}
+                </button>
+            `).join('');
+        }
+
+        function useQuickPrompt(text) {
+            document.getElementById('mentor-chat-input').value = text;
+            document.getElementById('mentor-chat-input').focus();
+        }
+
+        function generateSmartAgentReply(agentId, userMsg) {
+            const score = getOverallScore();
+            const tier = getReadinessTier(score).label;
+            const role = state.profile.targetRole || 'your target tech role';
+            const projCount = state.projects.length;
+            const s = state.scores;
+
+            // Identify weakest dimension
+            const dims = [
+                { name: 'Direction Clarity', val: s.direction },
+                { name: 'Technical Depth', val: s.technical },
+                { name: 'Practical Execution', val: s.practical },
+                { name: 'Interview Readiness', val: s.interview },
+                { name: 'Consistency', val: s.consistency }
+            ].sort((a, b) => a.val - b.val);
+            const weakest = dims[0];
+            const strongest = dims[dims.length - 1];
+
+            if (agentId === 'career') {
+                return `Based on your Digital Twin (${score}/100 — ${tier} Tier) for ${role}:\n• Your strongest asset right now is ${strongest.name} (${strongest.val}%).\n• Market reality: Employers filter out generic resumes. With ${projCount} verified project(s) logged, your fastest leap is building 1–2 deployed projects that solve real problems and closing your ${weakest.name} gap (${weakest.val}%).`;
+            }
+            if (agentId === 'planning') {
+                const pending = state.checklist.filter(c => !c.done).slice(0, 2).map(c => `• ${c.text}`).join('\n');
+                return `Here is your focused 3-day execution sprint (${state.profile.hours}):\n• Day 1: Tackle your top pending item and spend 45 mins hands-on coding.\n• Day 2: Pass 1 Surprise Assessment in Stage 2 to push Technical Depth past ${Math.min(100, s.technical + 15)}%.\n• Day 3: Complete 1 Mock Interview in Stage 4.\n\nNext pending tasks:\n${pending || '• All current tasks done — add a new capstone milestone!'}`;
+            }
+            if (agentId === 'evaluation') {
+                return `Strict Capability Audit for ${state.profile.name}:\n• Composite Score: ${score}/100 (${tier})\n• Biggest Bottleneck: ${weakest.name} (${weakest.val}%)\n• Verified Projects: ${projCount} | Assessments Passed: ${state.assessmentsPassed}\n\nActionable Verdict: ${projCount < 2 ? 'Log at least 2 projects with live demo URLs in Stage 2 — code without a live link rarely convinces evaluators.' : 'Great project volume! Now focus on scoring 8+/10 in Stage 4 Mock Interviews to prove you can defend your architecture.'}`;
+            }
+            // Recruiter Agent
+            return `Hiring Manager View for ${role}:\n• Current Readiness: ${score >= 75 ? 'Strong — ready to start applying with your Verified Capability Passport!' : 'Building — aim for 75+ composite score before mass-applying.'}\n• GitHub Check: Recruiters scan your pinned repos in 30 seconds. Make sure your ${projCount} project(s) have a clear problem statement, tech stack, and live link.\n• Pro Tip: Use Stage 4's Resume Proof Enhancer to turn your projects into quantifiable bullet points.`;
+        }
+
+        function sendMentorMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('mentor-chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const agentId = state.activeAgent;
+            state.chats[agentId].push({ role: 'user', text, timestamp: Date.now() });
+            const reply = generateSmartAgentReply(agentId, text);
+            state.chats[agentId].push({ role: 'model', text: reply, timestamp: Date.now() });
+
+            input.value = '';
+            saveState();
+            renderMentorChat();
+        }
+
+        function applyMoodPlan(mood, notify = true) {
+            state.selectedMood = mood;
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                const isThis = btn.dataset.mood === mood;
+                btn.className = isThis
+                    ? 'mood-btn px-3 py-2 rounded-xl border-2 border-brand-600 bg-brand-50 text-xs font-semibold text-brand-950'
+                    : 'mood-btn px-3 py-2 rounded-xl border border-slate-200 hover:bg-brand-50/50 text-xs font-semibold text-slate-700';
+            });
+            document.getElementById('mood-plan-output').textContent = MOOD_PLANS[mood] || MOOD_PLANS['High Energy'];
+            saveState();
+            if (notify) showToast(`Schedule adapted for "${mood}"!`, 'info');
+        }
+
+        // ---------------------------------------------------------
+        // 8. STAGE 4: MOCK INTERVIEW SIMULATOR & RESUME ENHANCER
+        // ---------------------------------------------------------
+        function renderInterviewSetup() {
+            const mode = state.interviewMode || 'Technical';
+            const list = INTERVIEW_QUESTIONS[mode];
+            const q = list[state.interviewIndex % list.length];
+            document.getElementById('interview-mode-label').textContent = mode;
+            document.getElementById('interview-question-text').textContent = q;
+        }
+
+        function setInterviewMode(mode) {
+            state.interviewMode = mode;
+            state.interviewIndex = 0;
+            document.querySelectorAll('.imode-btn').forEach(b => {
+                b.className = b.dataset.imode === mode
+                    ? 'imode-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-700 text-white'
+                    : 'imode-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-brand-900 hover:bg-white';
+            });
+            document.getElementById('interview-feedback-box').classList.add('hidden');
+            saveState();
+            renderInterviewSetup();
+        }
+
+        function nextInterviewQuestion() {
+            state.interviewIndex = (state.interviewIndex + 1) % INTERVIEW_QUESTIONS[state.interviewMode].length;
+            document.getElementById('interview-answer-input').value = '';
+            document.getElementById('interview-feedback-box').classList.add('hidden');
+            saveState();
+            renderInterviewSetup();
+        }
+
+        function evaluateInterviewAnswer() {
+            const answer = document.getElementById('interview-answer-input').value.trim();
+            if (answer.length < 15) {
+                showToast('Please write a more detailed answer (at least a couple of sentences).', 'error');
+                return;
+            }
+
+            const words = answer.split(/\s+/).length;
+            const lower = answer.toLowerCase();
+            let score = 5;
+            const strengths = [];
+            const tips = [];
+
+            if (words >= 35) { score += 2; strengths.push('Good depth and thorough explanation.'); }
+            else { tips.push('Expand your answer with more concrete context (aim for 40+ words).'); }
+
+            if (/\d+|%|ms|hours|users|faster|reduced|improved/.test(lower)) {
+                score += 1.5;
+                strengths.push('Included measurable metrics or quantitative reasoning.');
+            } else {
+                tips.push('Add measurable impact or numbers (e.g., latency reduced, hours saved, or scale).');
+            }
+
+            if (/because|therefore|trade-off|first|second|result|solution|approach|prioritize/.test(lower)) {
+                score += 1.5;
+                strengths.push('Clear logical structure and decision-making rationale.');
+            } else {
+                tips.push('Use structured signposting (e.g., Situation → Action → Result or First/Second).');
+            }
+
+            const finalScore = Math.min(10, Math.round(score));
+            const boost = finalScore * 2 + 4;
+            bumpScore('interview', boost);
+            logArtifact('Interview', `${state.interviewMode} Mock Interview — ${finalScore}/10`, `Evaluated structured response (${words} words).`, `+${boost} Interview`);
+            saveState();
+
+            const fb = document.getElementById('interview-feedback-box');
+            fb.classList.remove('hidden');
+            fb.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-extrabold text-brand-950">Evaluation Score: ${finalScore} / 10</span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">+${boost} Interview Readiness</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div class="p-3 rounded-lg bg-emerald-50 border border-emerald-100">
+                        <p class="font-bold text-emerald-900 mb-1">Strengths</p>
+                        <ul class="list-disc pl-4 space-y-1 text-emerald-800">${(strengths.length ? strengths : ['Clear direct attempt at answering the prompt.']).map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
+                    </div>
+                    <div class="p-3 rounded-lg bg-amber-50 border border-amber-100">
+                        <p class="font-bold text-amber-900 mb-1">Improvement Tips</p>
+                        <ul class="list-disc pl-4 space-y-1 text-amber-800">${(tips.length ? tips : ['Great structure! Practice delivering this concisely in under 90 seconds.']).map(t => `<li>${escapeHtml(t)}</li>`).join('')}</ul>
+                    </div>
+                </div>`;
+
+            renderDashboard();
+            renderCertification();
+            showToast(`Interview scored ${finalScore}/10!`, 'success');
+        }
+
+        function renderResumeProjectSelect() {
+            const sel = document.getElementById('resume-project-select');
+            sel.innerHTML = `<option value="">-- Or type a custom description below --</option>` +
+                state.projects.map(p => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.title)} (${escapeHtml(p.stack)})</option>`).join('');
+        }
+
+        function loadProjectIntoEnhancer() {
+            const id = document.getElementById('resume-project-select').value;
+            const proj = state.projects.find(p => p.id === id);
+            if (proj) {
+                document.getElementById('resume-raw-input').value = `Built ${proj.title} using ${proj.stack} to solve real user workflows.`;
+            }
+        }
+
+        function enhanceResumeProof() {
+            const raw = document.getElementById('resume-raw-input').value.trim();
+            if (!raw) {
+                showToast('Select a project or paste a rough description first.', 'error');
+                return;
+            }
+            const clean = raw.replace(/^(built|made|created|did|worked on)\s+/i, '').replace(/\.$/, '');
+            const role = state.profile.targetRole || 'Software Engineering';
+
+            const bullets = [
+                `Engineered and deployed ${clean}, implementing modular architecture and responsive UI patterns aligned with ${role} best practices.`,
+                `Streamlined end-to-end user workflows in ${clean}, improving execution reliability and eliminating manual tracking friction.`,
+                `Documented source code, live demo artifacts, and technical trade-offs for ${clean} to deliver verifiable, production-ready proof.`
+            ];
+
+            const out = document.getElementById('resume-enhanced-output');
+            out.classList.remove('hidden');
+            out.innerHTML = bullets.map(b => `
+                <div class="p-3 rounded-xl bg-brand-50/70 border border-brand-200 text-xs text-brand-950 flex items-start justify-between gap-2">
+                    <span>${escapeHtml(b)}</span>
+                    <button onclick="copyText('${escapeHtml(b).replace(/'/g, "\\'")}')" class="shrink-0 p-1.5 rounded-lg bg-white border border-brand-200 hover:bg-brand-100 text-brand-700" title="Copy bullet">
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+            showToast('Action-verb resume bullets generated!', 'success');
+        }
+
+        function copyText(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast('Copied to clipboard!', 'success');
+        }
+
+        // ---------------------------------------------------------
+        // 9. STAGE 5: VERIFIED CAPABILITY PASSPORT
+        // ---------------------------------------------------------
+        function renderCertification() {
+            const score = getOverallScore();
+            const tier = getReadinessTier(score);
+            const s = state.scores;
+
+            document.getElementById('cert-student-name').textContent = state.profile.name || 'Student';
+            document.getElementById('cert-target-role').textContent = state.profile.targetRole || 'Role Not Locked Yet';
+            document.getElementById('cert-hours').textContent = `Pace: ${state.profile.hours || '10-15 hours/week'}`;
+            document.getElementById('cert-overall-score').textContent = score;
+            document.getElementById('cert-tier-badge').textContent = `${tier.label} Tier`;
+            document.getElementById('cert-issued-date').textContent = `Issued: ${new Date().toLocaleDateString()}`;
+
+            const dims = [
+                { label: 'Direction Clarity', val: s.direction },
+                { label: 'Technical Depth', val: s.technical },
+                { label: 'Practical Execution', val: s.practical },
+                { label: 'Interview Readiness', val: s.interview },
+                { label: 'Consistency', val: s.consistency }
+            ];
+            document.getElementById('cert-dimensions-grid').innerHTML = dims.map(d => `
+                <div class="p-3.5 rounded-xl bg-brand-50/60 border border-brand-100">
+                    <div class="flex items-center justify-between text-xs mb-1.5">
+                        <span class="font-semibold text-brand-950">${d.label}</span>
+                        <span class="font-extrabold text-brand-700">${d.val}%</span>
+                    </div>
+                    <div class="w-full h-2 bg-brand-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-brand-700 rounded-full" style="width: ${d.val}%"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            const projBox = document.getElementById('cert-projects-list');
+            if (state.projects.length === 0) {
+                projBox.innerHTML = `<p class="text-xs text-slate-500 italic">No verified projects logged yet.</p>`;
+            } else {
+                projBox.innerHTML = state.projects.map(p => `
+                    <div class="p-3 rounded-xl border border-brand-100 bg-slate-50/50 text-xs flex items-center justify-between gap-2">
+                        <div>
+                            <p class="font-bold text-brand-950">${escapeHtml(p.title)}</p>
+                            <p class="text-slate-500">${escapeHtml(p.stack)}</p>
+                        </div>
+                        <a href="${escapeHtml(p.github)}" target="_blank" rel="noopener" class="text-brand-700 font-bold shrink-0 hover:underline">Proof &nearr;</a>
+                    </div>
+                `).join('');
+            }
+
+            const artBox = document.getElementById('cert-artifacts-list');
+            if (state.artifacts.length === 0) {
+                artBox.innerHTML = `<p class="text-xs text-slate-500 italic">No execution logs recorded yet.</p>`;
+            } else {
+                artBox.innerHTML = state.artifacts.slice(0, 6).map(a => `
+                    <div class="flex items-center justify-between p-2.5 rounded-xl border border-brand-100 bg-slate-50/40 text-xs">
+                        <div>
+                            <span class="font-bold text-brand-800 mr-1.5">[${escapeHtml(a.type)}]</span>
+                            <span class="font-semibold text-brand-950">${escapeHtml(a.title)}</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400 shrink-0 ml-2">${new Date(a.timestamp).toLocaleDateString()}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // ---------------------------------------------------------
+        // 10. NAVIGATION, DEMO DATA & RESET MODAL
+        // ---------------------------------------------------------
+        const VIEW_TITLES = {
+            dashboard: 'Dashboard & Digital Twin',
+            discovery: 'Stage 1 — Direction Discovery',
+            formation: 'Stage 2 — Capability Formation',
+            mentoring: 'Stage 3 — Multi-Agent AI Mentoring Hub',
+            preparation: 'Stage 4 — Professional Preparation',
+            certification: 'Stage 5 — Verified Readiness Passport'
+        };
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
+            const target = document.getElementById(`view-${viewId}`);
+            if (target) target.classList.remove('hidden');
+
+            document.getElementById('header-page-title').textContent = VIEW_TITLES[viewId] || 'AiCademy';
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                const isActive = btn.dataset.nav === viewId;
+                btn.className = isActive
+                    ? 'nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all bg-white/15 text-white shadow-sm'
+                    : 'nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-brand-100 hover:bg-white/10 hover:text-white';
+            });
+
+            if (viewId === 'dashboard') renderRadarChart();
+            if (viewId === 'certification') renderCertification();
+            toggleMobileSidebar(false);
+            lucide.createIcons();
+        }
+
+        function toggleMobileSidebar(open) {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('mobile-backdrop');
+            if (open) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+
+        function openResetModal() {
+            const m = document.getElementById('reset-modal');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+        }
+
+        function closeResetModal() {
+            const m = document.getElementById('reset-modal');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+        }
+
+        function confirmResetData() {
+            localStorage.removeItem(STORAGE_KEY);
+            state = getDefaultState();
+            currentQuiz = null;
+            closeResetModal();
+            renderAll();
+            showToast('All local data has been reset.', 'info');
+        }
+
+        function loadDemoData() {
+            const top3 = [
+                { ...ROLE_CATALOG[0], matchPercent: 95 },
+                { ...ROLE_CATALOG[2], matchPercent: 88 },
+                { ...ROLE_CATALOG[1], matchPercent: 82 }
+            ];
+            state = {
+                profile: {
+                    name: 'Aarav Sharma',
+                    interests: ['Web Dev', 'Cloud/DevOps'],
+                    skills: 'JavaScript, HTML, CSS, React, Python, SQL, Git',
+                    hours: '10-15 hours/week',
+                    targetRole: 'Full-Stack Web Developer',
+                    discoveredRoles: top3,
+                    roadmap: top3[0].roadmap
+                },
+                scores: {
+                    direction: 92,
+                    technical: 84,
+                    practical: 88,
+                    interview: 78,
+                    consistency: 85
+                },
+                checklist: [
+                    { id: 'd1', text: '[Week 1] Build responsive layout with Tailwind CSS', done: true },
+                    { id: 'd2', text: '[Week 2] Design CRUD data models & localStorage persistence', done: true },
+                    { id: 'd3', text: '[Week 3] Deploy live web app to GitHub Pages', done: true },
+                    { id: 'd4', text: '[Week 4] Complete 2 Technical Mock Interviews', done: false }
+                ],
+                projects: [
+                    {
+                        id: 'dp1',
+                        title: 'AiCademy — Digital Institution Prototype',
+                        stack: 'HTML5, Tailwind CSS, Chart.js, LocalStorage',
+                        github: 'https://github.com/aicademy-demo/aicademy',
+                        demo: 'https://aicademy-demo.github.io/aicademy/',
+                        timestamp: Date.now() - 86400000
+                    },
+                    {
+                        id: 'dp2',
+                        title: 'PulseTrack — Student Habit Analytics',
+                        stack: 'JavaScript, Python, SQL, Tailwind',
+                        github: 'https://github.com/aicademy-demo/pulsetrack',
+                        demo: 'https://pulsetrack-demo.netlify.app',
+                        timestamp: Date.now() - 172800000
+                    }
+                ],
+                artifacts: [
+                    { id: 'da1', type: 'Interview', title: 'Technical Mock Interview — 8/10', details: 'Evaluated structured response (54 words).', scoreImpact: '+20 Interview', timestamp: Date.now() - 3600000 },
+                    { id: 'da2', type: 'Assessment', title: 'Surprise Assessment: 4/4 (100%)', details: 'Role diagnostic completed with 100% accuracy.', scoreImpact: '+28 Tech Depth', timestamp: Date.now() - 7200000 },
+                    { id: 'da3', type: 'Project', title: 'Verified Project: AiCademy — Digital Institution Prototype', details: 'Stack: HTML5, Tailwind CSS, Chart.js, LocalStorage', scoreImpact: '+25 Practical', timestamp: Date.now() - 86400000 },
+                    { id: 'da4', type: 'Direction', title: 'Locked Target Role: Full-Stack Web Developer', details: 'Saved 4-week Adaptive Roadmap (10-15 hours/week).', scoreImpact: '+Direction Clarity', timestamp: Date.now() - 172800000 }
+                ],
+                assessmentsPassed: 2,
+                chats: {
+                    career: [
+                        { role: 'model', text: 'Welcome back Aarav! Your Digital Twin is at 85/100 (Job-Ready Tier). With 2 verified projects and 2 passed assessments, you are ready to export your Verified Capability Passport in Stage 5.', timestamp: Date.now() - 1800000 }
+                    ],
+                    planning: [],
+                    evaluation: [],
+                    recruiter: []
+                },
+                activeAgent: 'career',
+                selectedMood: 'Steady Focus',
+                interviewMode: 'Technical',
+                interviewIndex: 0
+            };
+
+            saveState();
+            renderAll();
+            showToast('Demo Digital Twin loaded! Ready for instant walkthrough.', 'success');
+        }
+
+        // Bootstrap on load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderAll();
+        });
+    </script>
+</body>
+</html>
